@@ -44,7 +44,7 @@ from aiohttp import web
 # Render'da bu qiymatlarni Environment Variables orqali bering
 # (tokenni GitHub'ga yozmaslik uchun). Bo'lmasa, pastdagi default ishlatiladi.
 # ============================================================================
-BOT_TOKEN = "9236599500:AAHPb9C7IEcW5yWFRUUm62-gpM-EooS-dvA"
+BOT_TOKEN = "9236599500:AAHcuooe0K3CSuQCb7ZvSucLZNYSjbetpHQ"
 CHANNEL_ID ="-1004410450381"
 SUPER_ADMIN_ID = "8531801779"
 SALES_ADMIN = "servis_istanbul"  
