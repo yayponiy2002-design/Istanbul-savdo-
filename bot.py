@@ -44,10 +44,10 @@ from aiohttp import web
 # Render'da bu qiymatlarni Environment Variables orqali bering
 # (tokenni GitHub'ga yozmaslik uchun). Bo'lmasa, pastdagi default ishlatiladi.
 # ============================================================================
-BOT_TOKEN = os.getenv("BOT_TOKEN", "BU_YERGA_BOT_TOKEN_YOZING")
-CHANNEL_ID = os.getenv("CHANNEL_ID", "@kanal_adi")  # "@kanal_adi" yoki -1001234567890
-SUPER_ADMIN_ID = int(os.getenv("SUPER_ADMIN_ID", "123456789"))
-SALES_ADMIN = os.getenv("SALES_ADMIN", "satis_yoneticisi_username")  # @ belgisiz
+BOT_TOKEN = os.getenv"9236599500:AAHPb9C7IEcW5yWFRUUm62-gpM-EooS-dvA"
+CHANNEL_ID = os.getenv"-1004410450381"
+SUPER_ADMIN_ID = int(os.getenv"8531801779")
+SALES_ADMIN = os.getenv("servis_istanbul")  
 DB_PATH = os.getenv("DB_PATH", "shop.db")
 
 MAX_PHOTOS = 10
