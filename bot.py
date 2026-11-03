@@ -44,8 +44,8 @@ from aiohttp import web
 # Render'da bu qiymatlarni Environment Variables orqali bering
 # (tokenni GitHub'ga yozmaslik uchun). Bo'lmasa, pastdagi default ishlatiladi.
 # ============================================================================
-BOT_TOKEN = os.getenv"9236599500:AAHPb9C7IEcW5yWFRUUm62-gpM-EooS-dvA"
-CHANNEL_ID = os.getenv"-1004410450381"
+BOT_TOKEN = os.getenv("9236599500:AAHPb9C7IEcW5yWFRUUm62-gpM-EooS-dvA")
+CHANNEL_ID = os.getenv("-1004410450381")
 SUPER_ADMIN_ID = int(os.getenv"8531801779")
 SALES_ADMIN = os.getenv("servis_istanbul")  
 DB_PATH = os.getenv("DB_PATH", "shop.db")
