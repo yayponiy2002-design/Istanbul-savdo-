@@ -22,10 +22,10 @@ from aiogram.types import (
 # =========================================================================
 # ⚙️ BU ALANI KENDİ BİLGİLERİNİZLE DOLDURUN:
 # =========================================================================
-BOT_TOKEN = 9236599500:AAHPb9C7IEcW5yWFRUUm62-gpM-EooS-dvA
-CHANNEL_ID = -1004466199191
-SUPER_ADMIN_ID = 8531801779
-DEFAULT_SALES_ADMIN = servis_istanbul
+BOT_TOKEN = "9236599500:AAHPb9C7IEcW5yWFRUUm62-gpM-EooS-dvA"
+CHANNEL_ID = "-1004466199191"
+SUPER_ADMIN_ID = "8531801779"
+DEFAULT_SALES_ADMIN = "servis_istanbul"
 # =========================================================================
 
 DB_NAME = "shop_bot.db"
