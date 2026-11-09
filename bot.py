@@ -31,7 +31,7 @@ from aiogram.types import (
 # KONFIGURATSIYA (SOZLAMALAR)
 # ==========================================
 # Ushbu qiymatlarni o'zingizning ma'lumotlaringizga moslang
-BOT_TOKEN = "BOT_TOKEN", "9236599500:AAHcuooe0K3CSuQCb7ZvSucLZNYSjbetpHQ"
+BOT_TOKEN = "9236599500:AAHcuooe0K3CSuQCb7ZvSucLZNYSjbetpHQ"
 CHANNEL_ID = "@Istanbul_savdo" 
 SUPER_ADMIN_ID = 8531801779
 SALES_ADMIN = "@servis_istanbul" 
