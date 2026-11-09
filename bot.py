@@ -8,6 +8,7 @@ import urllib.parse
 from typing import List
 
 import aiosqlite
+from aiohttp import web
 from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -554,6 +555,9 @@ async def cb_sold_inactive(callback: CallbackQuery) -> None:
 # ==========================================
 # ASOSIY ISHGA TUSHIRISH (MAIN)
 # ==========================================
+async def handle_ping(request):
+    return web.Response(text="Bot is running 24/7!")
+
 async def main() -> None:
     logging.basicConfig(
         level=logging.INFO,
@@ -564,13 +568,16 @@ async def main() -> None:
     logging.info("Ma'lumotlar bazasi initsializatsiya qilinmoqda...")
     await init_db()
 
+    # Render.com port kontrolü için mini web sunucusu
+    app = web.Application()
+    app.router.add_get("/", handle_ping)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    port = int(os.getenv("PORT", 10000))
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    logging.info(f"Web server {port}-portda ishga tushdi.")
+
     logging.info("Bot polling rejimida ishga tushirilmoqda...")
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
-
-
-if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except (KeyboardInterrupt, SystemExit):
-        logging.info("Bot to'xtatildi.")
