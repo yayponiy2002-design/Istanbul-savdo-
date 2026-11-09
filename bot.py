@@ -31,12 +31,12 @@ from aiogram.types import (
 # ==========================================
 # KONFIGURATSIYA (SOZLAMALAR)
 # ==========================================
-# Ushbu qiymatlarni o'zingizning ma'lumotlaringizga moslang
-BOT_TOKEN = "9236599500:AAHcuooe0K3CSuQCb7ZvSucLZNYSjbetpHQ"
-CHANNEL_ID = "@Istanbul_savdo" 
+BOT_TOKEN = "9236599500:AAHcuooe0K3CSuQCb7ZvSucLZNYSjbetpHQ"  
+CHANNEL_ID = "@Istanbul_savdo"
 SUPER_ADMIN_ID = 8531801779
-SALES_ADMIN = "@servis_istanbul" 
+SALES_ADMIN = "servis_istanbul"
 DB_NAME = "shop_bot.db"
+
 
 # ==========================================
 # FSM HOLATLARI (STATES)
@@ -56,7 +56,6 @@ class MarkSold(StatesGroup):
 # MA'LUMOTLAR BAZASI FUNKSIYALARI (aiosqlite)
 # ==========================================
 async def init_db() -> None:
-    """Ma'lumotlar bazasi va mahsulotlar jadvalini yaratish."""
     async with aiosqlite.connect(DB_NAME) as db:
         await db.execute(
             """
@@ -121,7 +120,6 @@ async def is_id_unique(prod_id: str) -> bool:
 
 
 async def generate_unique_product_id() -> str:
-    """6 xonali takrorlanmas mahsulot ID raqami yaratish."""
     while True:
         candidate_id = f"{random.randint(100000, 999999)}"
         if await is_id_unique(candidate_id):
@@ -176,7 +174,7 @@ dp = Dispatcher(storage=MemoryStorage())
 
 
 # ==========================================
-# HANDLERLAR (ADMIN PANELI VA AKISHLAR)
+# HANDLERLAR
 # ==========================================
 @dp.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext) -> None:
@@ -222,7 +220,7 @@ async def msg_cancel(message: Message, state: FSMContext) -> None:
 
 
 # ------------------------------------------
-# 1. YANGI MAHSULOT POSTINI YARATISH BOSQICHLARI
+# 1. YANGI MAHSULOT POSTINI YARATISH
 # ------------------------------------------
 @dp.callback_query(F.data == "btn_add_post")
 async def cb_start_add_post(callback: CallbackQuery, state: FSMContext) -> None:
@@ -319,7 +317,6 @@ async def process_price(message: Message, state: FSMContext) -> None:
     photos = data.get("photos", [])
     details = data.get("details", "")
 
-    # Kanaldagi post matni
     caption = (
         f"{details}\n\n"
         f"💰 <b>Narxi:</b> {formatted_price} so'm\n"
@@ -336,7 +333,6 @@ async def process_price(message: Message, state: FSMContext) -> None:
 
     await message.answer("Ko'rib chiqish (Preview) tayyorlanmoqda...", reply_markup=ReplyKeyboardRemove())
 
-    # Admin uchun preview yuborish
     if len(photos) == 1:
         await bot.send_photo(
             chat_id=message.chat.id,
@@ -376,13 +372,12 @@ async def cb_publish_post(callback: CallbackQuery, state: FSMContext) -> None:
     prod_id = data["prod_id"]
     price = data["price"]
     clean_price = data["clean_price"]
-    title = data["details"].split("\n")[0][:60]  # Birinchi qator yoki qisqa sarlavha
+    title = data["details"].split("\n")[0][:60]
 
     await callback.message.edit_reply_markup(reply_markup=None)
     await callback.message.answer("⏳ Post kanalga yuborilmoqda...")
 
     try:
-        # 1. Rasmlarni kanalga yuborish
         if len(photos) == 1:
             channel_msg = await bot.send_photo(
                 chat_id=CHANNEL_ID,
@@ -398,7 +393,6 @@ async def cb_publish_post(callback: CallbackQuery, state: FSMContext) -> None:
             channel_msgs = await bot.send_media_group(chat_id=CHANNEL_ID, media=media_group)
             ch_msg_id = channel_msgs[0].message_id
 
-        # 2. Xarid qilish tugmasini yaratish
         order_msg_text = (
             f"Assalomu alaykum! Men ushbu mahsulotni sotib olmoqchiman:\n"
             f"📦 Mahsulot: {title}\n"
@@ -414,7 +408,6 @@ async def cb_publish_post(callback: CallbackQuery, state: FSMContext) -> None:
             ]
         )
 
-        # 3. Post ostiga buyurtma tugmali xabar yuborish
         btn_msg = await bot.send_message(
             chat_id=CHANNEL_ID,
             text=f"👆 <b>#{prod_id}</b> raqamli mahsulotga buyurtma berish uchun quyidagi tugmani bosing:",
@@ -422,7 +415,6 @@ async def cb_publish_post(callback: CallbackQuery, state: FSMContext) -> None:
         )
         btn_msg_id = btn_msg.message_id
 
-        # 4. Ma'lumotlar bazasiga saqlash
         await add_product(
             prod_id=prod_id,
             title=title,
@@ -453,7 +445,7 @@ async def cb_publish_post(callback: CallbackQuery, state: FSMContext) -> None:
 
 
 # ------------------------------------------
-# 2. TOVARNI 'SOTILDI' QILISH BOSQICHI
+# 2. TOVARNI 'SOTILDI' QILISH
 # ------------------------------------------
 @dp.callback_query(F.data == "btn_mark_sold")
 async def cb_start_mark_sold(callback: CallbackQuery, state: FSMContext) -> None:
@@ -505,7 +497,6 @@ async def process_mark_sold(message: Message, state: FSMContext) -> None:
 
     edit_errors = []
 
-    # 1. Kanaldagi rasm sarlavhasini tahrirlash
     try:
         await bot.edit_message_caption(
             chat_id=CHANNEL_ID,
@@ -514,9 +505,8 @@ async def process_mark_sold(message: Message, state: FSMContext) -> None:
         )
     except TelegramBadRequest as e:
         logging.warning(f"Rasm sarlavhasi tahrirlanmadi (ID: {ch_msg_id}): {e}")
-        edit_errors.append("Asosiy post sarlavhasini o'zgartirib bo'lmadi (ehtimol xabar o'chirilgan).")
+        edit_errors.append("Asosiy post sarlavhasini o'zgartirib bo'lmadi.")
 
-    # 2. Kanaldagi buyurtma tugmasini nofaol tugmaga o'zgartirish
     try:
         await bot.edit_message_text(
             chat_id=CHANNEL_ID,
@@ -535,7 +525,6 @@ async def process_mark_sold(message: Message, state: FSMContext) -> None:
             logging.warning(f"Tugma xabari tahrirlanmadi (ID: {btn_msg_id}): {e2}")
             edit_errors.append("Buyurtma tugmasini tahrirlab bo'lmadi.")
 
-    # 3. Bazada tovar holatini yangilash
     await set_product_sold(prod_id)
     await state.clear()
 
@@ -558,6 +547,7 @@ async def cb_sold_inactive(callback: CallbackQuery) -> None:
 async def handle_ping(request):
     return web.Response(text="Bot is running 24/7!")
 
+
 async def main() -> None:
     logging.basicConfig(
         level=logging.INFO,
@@ -568,7 +558,7 @@ async def main() -> None:
     logging.info("Ma'lumotlar bazasi initsializatsiya qilinmoqda...")
     await init_db()
 
-    # Render.com port kontrolü için mini web sunucusu
+    # Render.com port ochilishi uchun mini web server
     app = web.Application()
     app.router.add_get("/", handle_ping)
     runner = web.AppRunner(app)
@@ -581,3 +571,10 @@ async def main() -> None:
     logging.info("Bot polling rejimida ishga tushirilmoqda...")
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logging.info("Bot to'xtatildi.")
